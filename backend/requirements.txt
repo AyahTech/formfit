@@ -1,0 +1,4 @@
+pinecone-client 
+cohere 
+flask 
+python-dotenv
