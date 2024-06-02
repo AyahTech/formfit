@@ -24,7 +24,7 @@ pc = Pinecone(pinecone_api_key) # add your pinecone API key here
 index_name = 'entrez'
 index = pc.Index(index_name)
 
-limit = 3000000
+limit = 3000
 
 def retrieve(query):
     xq = co.embed(
@@ -32,7 +32,8 @@ def retrieve(query):
         model='multilingual-22-12',
         truncate='NONE'
     ).embeddings
-    # search pinecone index for context passage with the answer
+
+    # Search pinecone index for context passage with the answer
     xc = index.query(vector=xq, top_k=3, include_metadata=True)
 
     # Extract relevant information from the matches
@@ -43,35 +44,28 @@ def retrieve(query):
 
     # Combine the information into formatted contexts
     contexts = [
-        f"Title: {title}\n Abstract: {abstract}\n Authors: {author}\n Publication Year: {publication_year}\n"
+        f"Title: {title}\nAbstract: {abstract}\nAuthors: {author}\nPublication Year: {publication_year}\n"
         for title, abstract, author, publication_year in zip(titles, abstracts, authors, publication_years)
     ]
 
     # Build the prompt with the retrieved contexts included
     prompt_start = (
-        f"Answer the Query based on the contexts. \n\n"
-        f"Context:\n"
+        "Answer the Query based on the contexts.\n\nContext:\n"
     )
     prompt_end = (
-        f"\n\nQuery: \n\nPlease provide the summary along with {titles} & {authors} at the end when the exercises has been suggested based on {query}\n."
+        f"\n\nQuery:\n\nPlease provide the summary along with {titles} & {authors} at the end when the exercises have been suggested based on {query}.\n"
     )
 
     # Append contexts until hitting the limit
-    for i in range(1, len(contexts)):
-        if len("".join(contexts[:i])) >= limit:
-            prompt = (
-                prompt_start +
-                "".join(contexts[:i-1]) +
-                prompt_end
-            )
+    combined_contexts = ""
+    for context in contexts:
+        if len(combined_contexts + context) > limit:
             break
-        elif i == len(contexts)-1:
-            prompt = (
-                prompt_start +
-                "".join(contexts) +
-                prompt_end
-            )
+        combined_contexts += context
+
+    prompt = prompt_start + combined_contexts + prompt_end
     return prompt
+
 
 def complete(prompt):
   response = co.generate(
