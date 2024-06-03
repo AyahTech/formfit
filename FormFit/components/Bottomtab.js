@@ -1,16 +1,28 @@
 import * as React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
+import { Image } from 'react-native';
 import Exercise from '../Pages/Exercise';
 import AskCoach from '../Pages/AskCoach';
 import ImproveForm from '../Pages/ImproveForm';
 
 const Tab = createBottomTabNavigator();
 
+// Custom component for the header logo
+function HeaderLogo() {
+  return (
+    <Image
+      source={require('../assets/images/Logo.png')} // replace with your logo's path
+      style={{ width: 150, height: 90 , marginLeft: -20 }} // adjust size as needed
+      resizeMode="contain"
+    />
+  );
+}
+
 function BottomTab() {
   const route = useRoute();
-  
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -42,13 +54,25 @@ function BottomTab() {
       })}
       initialRouteName="Exercise"
     >
-      <Tab.Screen name="Exercise" component={Exercise} options={{ 
-        headerShown: true, // Show the header
-        headerTitle: 'FormFit', // Set the header title to "FormFit"
-        headerTitleAlign: 'start', // Align the header title to the center
-      }} />
-      <Tab.Screen name="Ask Coach" component={AskCoach} options={{ headerShown: false }} />
-      <Tab.Screen name="Improve Form" component={ImproveForm} options={{ headerShown: false }} />
+      <Tab.Screen 
+        name="Exercise" 
+        component={Exercise} 
+        options={{ 
+          headerShown: true, 
+          headerTitle: () => <HeaderLogo />, // Use custom logo component
+          headerTitleAlign: 'start', 
+        }} 
+      />
+      <Tab.Screen 
+        name="Ask Coach" 
+        component={AskCoach} 
+        options={{ headerShown: false }} 
+      />
+      <Tab.Screen 
+        name="Improve Form" 
+        component={ImproveForm} 
+        options={{ headerShown: false }} 
+      />
     </Tab.Navigator>
   );
 }

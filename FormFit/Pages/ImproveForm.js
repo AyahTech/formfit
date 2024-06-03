@@ -31,8 +31,7 @@ const ImproveForm = () => {
         </TouchableOpacity>
         <Text style={styles.headingText}>Get real-time form feedback to build injury-free exercise routine.</Text>
         <Text style={styles.subtext}>
-          Enable access to camera and microphone to receive real-time exercise tips via audio. Your video and audio are
-          only accessed while on the "Improve Form" screen.
+        ⚠️ This module is currently under development. We are encountering issues related to model size and associated costs. The functionality was demonstrated in a presentation using a demo running on a local machine.
         </Text>
         <View style={styles.avatarContainer}>
           <ImageBackground source={require('../assets/images/scanner.png')} style={styles.avatar} />
@@ -132,6 +131,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 24,
+    fontWeight: 'bold',
+    color:'red'
   },
   avatarContainer: {
     flex: 1,
